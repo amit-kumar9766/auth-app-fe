@@ -9,6 +9,7 @@ import { type AuthFormData } from "../../types";
 interface SignInFormProps {
   onSubmit: (email: string, password: string) => void;
   onSwitchToSignUp?: () => void;
+  onErrorClear?: () => void;
   loading?: boolean;
   error?: string;
 }
@@ -16,8 +17,9 @@ interface SignInFormProps {
 export const SignInForm: React.FC<SignInFormProps> = ({
   onSubmit,
   onSwitchToSignUp,
+  onErrorClear,
   loading = false,
-  error: externalError,
+  error,
 }) => {
   const [formData, setFormData] = useState<AuthFormData>({
     email: "",
@@ -26,7 +28,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
   const [errors, setErrors] = useState<Partial<AuthFormData>>({});
   const [submitError, setSubmitError] = useState<string>("");
 
-  const displayError = externalError || submitError;
+  const displayError = error || submitError;
 
   const validateForm = (): boolean => {
     const newErrors: Partial<AuthFormData> = {};
@@ -63,6 +65,9 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     }
     if (submitError) {
       setSubmitError("");
+    }
+    if (error && onErrorClear) {
+      onErrorClear();
     }
   };
 

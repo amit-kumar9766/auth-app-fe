@@ -1,7 +1,7 @@
 /**
  * SignUpPage uses SignUpForm
  */
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../layout/Header";
 import { SignUpForm } from "../auth/SignUpForm";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,15 @@ import { useAuth } from "../../context/AuthContext";
 export const SignUp: React.FC = () => {
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState<string>("");
 
-  const handleSignUp = async (email: string, password: string) => {
-    signup(email, password);
+  const handleSignUp = (email: string, password: string) => {
+    try {
+      signup(email, password);
+      navigate("/feed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Signup failed");
+    }
   };
 
   return (
@@ -24,8 +30,9 @@ export const SignUp: React.FC = () => {
           onSwitchToSignIn={() => {
             navigate("/signin");
           }}
+          onErrorClear={() => setError("")}
           loading={false}
-         
+          error={error}
         />
       </div>
     </div>

@@ -9,7 +9,6 @@ import { SignInForm } from "./SignInForm";
 import { SignUpForm } from "./SignUpForm";
 import { useAuth } from "../../context/AuthContext";
 
-
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -23,15 +22,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 }) => {
   const [mode, setMode] = useState<"signin" | "signup">(defaultMode);
   const { login, signup } = useAuth();
+  const [error, setError] = useState<string>("");
 
   const handleSignIn = (email: string, password: string) => {
+    try {
       login(email, password);
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    }
   };
 
   const handleSignUp = (email: string, password: string) => {
+    try {
       signup(email, password);
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Signup failed");
+    }
   };
 
   return (
@@ -41,16 +49,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           onSubmit={handleSignIn}
           onSwitchToSignUp={() => {
             setMode("signup");
+            setError("");
           }}
+          onErrorClear={() => setError("")}
           loading={false}
+          error={error}
         />
       ) : (
         <SignUpForm
           onSubmit={handleSignUp}
           onSwitchToSignIn={() => {
             setMode("signin");
+            setError("");
           }}
+          onErrorClear={() => setError("")}
           loading={false}
+          error={error}
         />
       )}
     </Modal>

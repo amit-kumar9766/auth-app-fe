@@ -9,7 +9,6 @@
 import { useEffect, useState } from "react";
 import { type Post, type User } from "../types";
 import {
-  initialPosts,
   getRandomEmoji,
   formatTimestamp,
 } from "../utils/mockData";
@@ -29,7 +28,7 @@ export const usePosts = (userId: string | number | null) => {
     if (saved) {
       setPosts(JSON.parse(saved));
     } else {
-      setPosts(initialPosts);
+      setPosts([]);
       localStorage.setItem(getStorageKey(userId), JSON.stringify([]));
     }
   }, [userId]);

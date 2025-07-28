@@ -13,6 +13,7 @@ interface SignUpFormData extends AuthFormData {
 interface SignUpFormProps {
   onSubmit: (email: string, password: string) => void;
   onSwitchToSignIn?: () => void;
+  onErrorClear?: () => void;
   loading?: boolean;
   error?: string;
 }
@@ -20,7 +21,9 @@ interface SignUpFormProps {
 export const SignUpForm: React.FC<SignUpFormProps> = ({
   onSubmit,
   onSwitchToSignIn,
+  onErrorClear,
   loading = false,
+  error,
 }) => {
   const [formData, setFormData] = useState<SignUpFormData>({
     email: "",
@@ -30,7 +33,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
   const [errors, setErrors] = useState<Partial<SignUpFormData>>({});
   const [submitError, setSubmitError] = useState<string>("");
 
-  const displayError = submitError;
+  const displayError = submitError || error;
 
   const validateForm = (): boolean => {
     const newErrors: Partial<SignUpFormData> = {};
@@ -74,6 +77,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     if (submitError) {
       setSubmitError("");
     }
+    if (error && onErrorClear) {
+      onErrorClear();
+    }
   };
 
   return (
@@ -95,7 +101,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
               <p className="text-sm text-red-600">{displayError}</p>
             </div>
           )}
-          
+
           <Input
             label="Email"
             type="email"

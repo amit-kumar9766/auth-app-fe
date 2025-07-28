@@ -2,7 +2,7 @@
  * SignInPage uses SignInForm
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../layout/Header";
 import { SignInForm } from "../auth/SignInForm";
 import { useNavigate } from "react-router-dom";
@@ -11,9 +11,15 @@ import { useAuth } from "../../context/AuthContext";
 export const SignIn: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState<string>("");
 
   const handleSignIn = (email: string, password: string) => {
-    login(email, password);
+    try {
+      login(email, password);
+      navigate("/feed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    }
   };
 
   return (
@@ -23,7 +29,9 @@ export const SignIn: React.FC = () => {
         <SignInForm
           onSubmit={handleSignIn}
           onSwitchToSignUp={() => navigate("/signup")}
+          onErrorClear={() => setError("")}
           loading={false}
+          error={error}
         />
       </div>
     </div>

@@ -5,13 +5,7 @@
  * For assignment only. Do NOT use localStorage to store passwords in real applications.
  */
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { preloadUsers } from "../utils/helpers";
 
 export interface User {
@@ -55,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     initializeAuth();
   }, []);
 
-  const signup = useCallback(async (email: string, password: string) => {
+  const signup = (email: string, password: string) => {
     const storedUsers = JSON.parse(
       localStorage.getItem("users") || "[]"
     ) as User[];
@@ -76,9 +70,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setCurrentUser(newUser);
     localStorage.setItem("currentUser", JSON.stringify(newUser));
-  }, []);
+  };
 
-  const login = useCallback((email: string, password: string) => {
+  const login = (email: string, password: string) => {
     const storedUsers = JSON.parse(
       localStorage.getItem("users") || "[]"
     ) as User[];
@@ -91,12 +85,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     setCurrentUser(user);
     localStorage.setItem("currentUser", JSON.stringify(user));
-  }, []);
+  };
 
-  const logout = useCallback(() => {
+  const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
-  }, []);
+  };
 
   const isAuthenticated = currentUser !== null;
 
